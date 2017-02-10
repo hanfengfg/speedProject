@@ -1,0 +1,22 @@
+{
+  "name": "speed",
+  "description": "这是作者的第一个框架，慎用！(手动滑稽)",
+  "keywords": [
+    "speed",
+    "good",
+    "swoole"
+  ],
+  "authors": [
+    {
+      "name": "hcfx",
+      "email": "191742199@qq.com",
+      "homepage": "http://www.earthyun.com",
+      "role": "Developer"
+    }
+  ],
+  "homepage": "http://www.earthyun.com",
+  "time": "2017-2-9",
+  "require": {
+    "speed/framework": "dev-master"
+  }
+}

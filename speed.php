@@ -4,6 +4,11 @@
 require __DIR__ . '/vendor/autoload.php';
 
 
-$app = new Speed\Server\SwooleBase();
-echo 123;
-return $app;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+// ... register commands
+$application->add(new Speed\Server\SwooleBase());
+$application->run();
+//return $app;

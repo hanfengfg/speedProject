@@ -13,10 +13,10 @@ trait Config
 {
     private $configPath;
     protected $config = [];
-
+    public $notFoundFilePrompt = 'File not found.';
     protected function init()
     {
-        $this->configPath = __DIR__ . '/../../config/';
+        $this->configPath = CONFIG_PATH;
     }
 
     protected function get($file)

@@ -42,7 +42,6 @@ class AutoLoad
 
     public function loadClass($class)
     {
-
         if($file = $this->findFile($class)){
             include $file;
         }

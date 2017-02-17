@@ -5,6 +5,11 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 
+defined('ROOT_PATH') || define('ROOT_PATH', __DIR__ . '/../');
+defined('APP_PATH') || define('APP_PATH', ROOT_PATH . '/app/');
+defined('CONFIG_PATH') || define('CONFIG_PATH', ROOT_PATH . '/config/');
+
+
 //解析路由
 $app = new Vendor\Core\Route();
 

@@ -8,6 +8,6 @@
 return [
 
     'Ttest' => 'test',
-    'test1' => 'test/test'
+    'test1' => '/TTest/test'
 
 ];

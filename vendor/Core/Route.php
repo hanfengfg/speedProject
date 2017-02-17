@@ -16,7 +16,8 @@ class Route extends Core
     private $path;
     private $params;
     private $routes;
-    private $use;
+    private $controller;
+    private $classFunction = 'index';
     private $strBlacklist = '!@#$%^~&*()_+|<>?:"{},./;\'[]\\';
 
     public function __construct()
@@ -24,6 +25,10 @@ class Route extends Core
         parent::__construct();
         $this->getPath();
         $this->registeredRoute();
+        $controller  = new $this->controller();
+        $classFunction = $this->classFunction;
+        $controller->$classFunction();
+
     }
 
     private function registeredRoute()
@@ -44,16 +49,18 @@ class Route extends Core
     {
         //将当前路由首字母转成大写
         $file = 'IndexController';
-        $classFunction = 'index';
         if(!empty($this->path)){
             $tmpPathArr = explode('/', $this->path);
             $count = count($tmpPathArr);
             if(1 == $count){
-                $file = ucfirst($tmpPathArr[0]).'Controller.php';
+                $file = ucfirst($tmpPathArr[0]).'Controller';
             }else{
-                $classFunction = $tmpPathArr[$count-1];
+                $this->classFunction = $tmpPathArr[$count-1];
                 array_pop($tmpPathArr);
-                $file = implode('/', $tmpPathArr);
+                foreach ($tmpPathArr as &$v){
+                    $v = ucfirst($tmpPathArr[0]);
+                }
+                $file = implode('/', $tmpPathArr).'Controller';
             }
         }
         //将方法查分出来
@@ -64,21 +71,18 @@ class Route extends Core
             exit;
         }
         //查询文件内方法是否存在
-        $this->findClass($use = '\\App\\Http\\Controller\\'. str_replace('/', '\\', $file), $classFunction);
+        $this->controller = '\\App\\Http\\Controller\\'. str_replace('/', '\\', $file);
+        $this->findClass();
         return;
     }
     //查找类内方法
-    private function findClass($use, $function)
+    private function findClass()
     {
-        if(class_exists($use)){
-            if(method_exists($use, $function)){
-                $this->use = $use;
-                return;
-            }
-        }
-        echo $this->notFoundFilePrompt;
-        exit;
 
+        if(!class_exists($this->controller) || !method_exists($this->controller, $this->classFunction)){
+            echo $this->notFoundFilePrompt;
+            exit;
+        }
     }
     private function getHost()
     {
@@ -110,7 +114,7 @@ class Route extends Core
                 exit;
             }
         }
-        return $this->path ?: ($this->path = strtolower(implode($tmpPath)));
+        return $this->path ?: ($this->path = strtolower(implode('/', $tmpPath)));
     }
 
     private function getParams()

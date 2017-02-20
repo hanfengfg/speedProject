@@ -12,9 +12,7 @@ class Route extends Core
 {
 
     const URL_MODEL = 0;
-    private $host;
     private $path;
-    private $params;
     private $routes;
     private $controller;
     private $classFunction = 'index';
@@ -25,17 +23,14 @@ class Route extends Core
         parent::__construct();
         $this->getPath();
         $this->registeredRoute();
-        $controller  = new $this->controller();
-        $classFunction = $this->classFunction;
-        $controller->$classFunction();
-
+        $this->dispatch();
     }
 
     private function registeredRoute()
     {
 
         $this->routes = $this->get('route');
-        foreach ($this->routes as $k => $v){
+        foreach ($this->routes as $k => $v) {
             if (strtolower($k[0] !== '/' ? $k : $k = substr($k, 1)) == $this->path) {
                 $this->path = $v;
                 break;
@@ -45,48 +40,50 @@ class Route extends Core
         return;
     }
 
+    private function dispatch()
+    {
+        call_user_func_array([new $this->controller(), $this->classFunction], []);
+    }
+
     private function findFile()
     {
         //将当前路由首字母转成大写
         $file = 'IndexController';
-        if(!empty($this->path)){
+        if (!empty($this->path)) {
             $tmpPathArr = explode('/', $this->path);
             $count = count($tmpPathArr);
-            if(1 == $count){
-                $file = ucfirst($tmpPathArr[0]).'Controller';
-            }else{
-                $this->classFunction = $tmpPathArr[$count-1];
+            if (1 == $count) {
+                $file = ucfirst($tmpPathArr[0]) . 'Controller';
+            } else {
+                $this->classFunction = $tmpPathArr[$count - 1];
                 array_pop($tmpPathArr);
-                foreach ($tmpPathArr as &$v){
+                foreach ($tmpPathArr as &$v) {
                     $v = ucfirst($tmpPathArr[0]);
                 }
-                $file = implode('/', $tmpPathArr).'Controller';
+                $file = implode('/', $tmpPathArr) . 'Controller';
             }
         }
         //将方法查分出来
         //查询文件是否存在
-        $absPath = APP_PATH.'/Http/Controller/'. $file.'.php';
-        if(!file_exists($absPath)){
+        $absPath = APP_PATH . '/Http/Controller/' . $file . '.php';
+        if (!file_exists($absPath)) {
             echo $this->notFoundFilePrompt;
             exit;
         }
         //查询文件内方法是否存在
-        $this->controller = '\\App\\Http\\Controller\\'. str_replace('/', '\\', $file);
+        $this->controller = '\\App\\Http\\Controller\\' . str_replace('/', '\\', $file);
         $this->findClass();
         return;
     }
+
     //查找类内方法
     private function findClass()
     {
 
-        if(!class_exists($this->controller) || !method_exists($this->controller, $this->classFunction)){
+        if (!class_exists($this->controller) || !method_exists($this->controller, $this->classFunction)) {
             echo $this->notFoundFilePrompt;
             exit;
         }
-    }
-    private function getHost()
-    {
-        return $this->host ?: ($this->host = $_SERVER['HTTP_HOST']);
     }
 
     /*
@@ -117,16 +114,4 @@ class Route extends Core
         return $this->path ?: ($this->path = strtolower(implode('/', $tmpPath)));
     }
 
-    private function getParams()
-    {
-        return $this->params ?: ($this->params = $_SERVER['QUERY_STRING']);
-    }
-
-    /*
-     * 查询文件地址是否存在
-     */
-    private function findPath()
-    {
-
-    }
 }

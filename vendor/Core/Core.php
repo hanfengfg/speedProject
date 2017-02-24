@@ -9,14 +9,10 @@
 namespace Vendor\Core;
 
 
-use Vendor\Config\Config;
+
 
 class Core
 {
-    use Config;
+    public  $notFoundFilePrompt = 'File not found.';
 
-    public function __construct()
-    {
-        $this->init();
-    }
 }

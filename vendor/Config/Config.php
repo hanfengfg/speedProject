@@ -7,23 +7,17 @@ namespace Vendor\Config;
  * Date: 2017/2/14
  * Time: 17:54
  */
-use Exception;
 
-trait Config
+
+class Config
 {
-    private $configPath;
-    protected $config = [];
-    public $notFoundFilePrompt = 'File not found.';
-    protected function init()
+
+    public static function get($file)
     {
-        $this->configPath = CONFIG_PATH;
+        if (!file_exists(CONFIG_PATH . $file . '.php')) {
+            throw new \Exception(CONFIG_PATH.".$file not found");
+        }
+        return require_once CONFIG_PATH . $file . '.php';
     }
 
-    protected function get($file)
-    {
-        if (!file_exists($this->configPath . $file . '.php')) {
-            throw new Exception("$this->configPath.$file not found");
-        }
-        return require_once $this->configPath . $file . '.php';
-    }
 }

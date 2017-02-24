@@ -8,5 +8,7 @@
  */
 class TestController
 {
-
+    public function test(){
+        echo "我是Test文件夹下的Test类内的test方法\n";
+    }
 }

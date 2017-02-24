@@ -8,19 +8,19 @@
 
 namespace Vendor\Core;
 
-class Route extends Core
+use Vendor\Config\Config;
+class Route
 {
 
     const URL_MODEL = 0;
     private $path;
-    private $routes;
+    private $routes = [];
     private $controller;
     private $classFunction = 'index';
     private $strBlacklist = '!@#$%^~&*()_+|<>?:"{},./;\'[]\\';
 
     public function __construct()
     {
-        parent::__construct();
         $this->getPath();
         $this->registeredRoute();
         $this->dispatch();
@@ -28,8 +28,7 @@ class Route extends Core
 
     private function registeredRoute()
     {
-
-        $this->routes = $this->get('route');
+        $this->routes = Config::get('route');
         foreach ($this->routes as $k => $v) {
             if (strtolower($k[0] !== '/' ? $k : $k = substr($k, 1)) == $this->path) {
                 $this->path = $v;
